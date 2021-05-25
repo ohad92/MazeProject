@@ -1,11 +1,60 @@
 package View;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 public class MazeDisplayer extends Canvas {
+    StringProperty imageFileNameWall = new SimpleStringProperty();
+    StringProperty imageFileNamePlayer = new SimpleStringProperty();
+
+    private int playerRow = 0;
+    private int playerCol = 0;
+
+
+
+    // getter and setters
+    public int getPlayerRow() {
+        return playerRow;
+    }
+    public int getPlayerCol() {
+        return playerCol;
+    }
+
+    public void setPosition(int row, int col){
+        this.playerRow = row;
+        this.playerCol = col;
+        draw(); // we call draw here because we want to draw the new position
+    }
+
+    public String getImageFileNameWall() {
+        return imageFileNameWall.get();
+    }
+
+    public void setImageFileNameWall(String imageFileNameWall) {
+        this.imageFileNameWall.set(imageFileNameWall);
+    }
+
+    public String getImageFileNamePlayer() {
+        return imageFileNamePlayer.get();
+    }
+
+    public void setImageFileNamePlayer(String imageFileNamePlayer) {
+        this.imageFileNamePlayer.set(imageFileNamePlayer);
+    }
+
+
+
+
+
+
     private int[][] maze;
     public void drawMaze(int[][] maze) {
 //        Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -13,6 +62,7 @@ public class MazeDisplayer extends Canvas {
 //        alert.show();
         this.maze = maze;
         draw();
+        setPosition(0,0); // set again the position of the player when pressing generatemaze
     }
 
     private void draw(){
@@ -29,21 +79,52 @@ public class MazeDisplayer extends Canvas {
             //clear the canvas
             graphicsContext.clearRect(0,0,canvasWidth,canvasHeight);
 
-            graphicsContext.setFill(Color.RED);
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    if(maze[i][j] == 1){
-                        double x = j * cellWidth;
-                        double y = i * cellHight;
 
+            drawMazeWalls(graphicsContext,rows,cols,cellHight,cellWidth);
+            drawPlayer(graphicsContext,cellHight,cellWidth);
+
+        }
+    }
+
+
+    private void drawMazeWalls(GraphicsContext graphicsContext, int rows, int cols, double cellHight, double cellWidth) {
+        Image wallImage = null;
+        try {
+            wallImage = new Image(new FileInputStream(getImageFileNameWall()));
+        } catch (FileNotFoundException e) {
+            System.out.println("There is no wall image");
+        }
+        graphicsContext.setFill(Color.RED);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if(maze[i][j] == 1){
+                    double x = j * cellWidth;
+                    double y = i * cellHight;
+                    if (wallImage == null)
                         graphicsContext.fillRect(x,y,cellWidth,cellHight);
-                    }
-
-
-
+                    else
+                        graphicsContext.drawImage(wallImage,x,y,cellWidth,cellHight);
                 }
-
             }
         }
+    }
+
+    private void drawPlayer(GraphicsContext graphicsContext, double cellHight, double cellWidth) {
+        Image playerImage = null;
+        try {
+            playerImage = new Image(new FileInputStream(getImageFileNamePlayer()));
+        } catch (FileNotFoundException e) {
+            System.out.println("There is no player image");
+        }
+        graphicsContext.setFill(Color.GREEN);
+
+        double x = getPlayerCol() * cellWidth;
+        double y = getPlayerRow() * cellHight;
+
+        if (playerImage == null)
+            graphicsContext.fillRect(x,y,cellWidth,cellHight);
+        else
+            graphicsContext.drawImage(playerImage,x,y,cellWidth,cellHight);
     }
 }
