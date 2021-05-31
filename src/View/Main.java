@@ -13,6 +13,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("MyView.fxml"));
         primaryStage.setTitle("Maze Game");
         primaryStage.setScene(new Scene(root, 500, 500));
+
         primaryStage.show();
     }
 

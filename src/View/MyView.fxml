@@ -64,9 +64,9 @@
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="New" disable="true" onAction="#NewMaze"/>
-                                <MenuItem mnemonicParsing="false" text="Save" disable="true" onAction="#SaveMaze"/>
-                                <MenuItem mnemonicParsing="false" text="Load" onAction="#LoadMaze"/>
+                                <MenuItem fx:id="newbutton" mnemonicParsing="false" text="New" disable="false" onAction="#NewMaze"/>
+                                <MenuItem fx:id="savebutton" mnemonicParsing="false" text="Save" disable="true" onAction="#SaveMaze"/>
+                                <MenuItem fx:id="loadbutton" mnemonicParsing="false" text="Load" onAction="#LoadMaze"/>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Options">

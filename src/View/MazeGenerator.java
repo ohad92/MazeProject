@@ -1,5 +1,8 @@
 package View;
 
+import algorithms.mazeGenerators.Maze;
+import algorithms.mazeGenerators.MyMazeGenerator;
+
 import java.util.Arrays;
 
 public class MazeGenerator {
@@ -11,12 +14,15 @@ public class MazeGenerator {
         System.out.println(Arrays.deepToString(maze));
     }
     public int[][] generateRandomMaze(int rows, int cols){
-        int[][] maze = new int[rows][cols];
-        for (int i=0;i<rows;i++){
-            for (int j = 0; j < cols; j++) {
-                maze[i][j] = (int)Math.round(Math.random());
-            }
-        }
-        return maze;
+//        int[][] maze = new int[rows][cols];
+//        for (int i=0;i<rows;i++){
+//            for (int j = 0; j < cols; j++) {
+//                maze[i][j] = (int)Math.round(Math.random());
+//            }
+//        }
+//        return maze;
+        MyMazeGenerator mg = new MyMazeGenerator();
+        Maze maze = mg.generate(10, 10);
+        return maze.getMaze();
     }
 }
