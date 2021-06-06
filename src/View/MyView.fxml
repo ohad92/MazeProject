@@ -97,7 +97,7 @@
     <center>
         <Pane BorderPane.alignment="CENTER">
             <children>
-                <MazeDisplayer onKeyPressed="#keyPressed" fx:id="mazeDisplayer" imageFileNameWall="./resources/images/wall.jpg" imageFileNamePlayer="./resources/images/blue_ghost.png" height="400.0" width="400.0" />
+                <MazeDisplayer onKeyPressed="#keyPressed" fx:id="mazeDisplayer" imageFileNameWall="./resources/images/wall.png" imageFileNamePlayer="./resources/images/blue_ghost.png" height="400.0" width="400.0" />
             </children>
             <padding>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

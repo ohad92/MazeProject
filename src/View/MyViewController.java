@@ -13,23 +13,28 @@ import javafx.scene.control.Alert;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
+import algorithms.mazeGenerators.Maze;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 
-public class MyViewController implements Initializable {
+public class MyViewController implements Initializable, Observer {
     public MenuItem newbutton;
     public MenuItem savebutton;
     public MenuItem loadbutton;
-    private MazeGenerator generator;
     public TextField textField_mazeRows;
     public TextField textField_mazeColumns;
     public MazeDisplayer mazeDisplayer;
     public Label lbl_playerRow;
     public Label lbl_playerCol;
     private MyViewModel myviewmodel;
+    private Maze mymaze;
 
+    private MazeGenerator generator;
 
     StringProperty updatePlayerRow = new SimpleStringProperty();
     StringProperty updatePlayerCol = new SimpleStringProperty();
@@ -59,22 +64,31 @@ public class MyViewController implements Initializable {
 
 
     public void generateMaze(ActionEvent actionEvent) {
-        if (generator == null)
-            generator = new MazeGenerator();
+//        if (generator == null)
+//            generator = new MazeGenerator();
+//        int rows = Integer.valueOf(textField_mazeRows.getText());
+//        int cols = Integer.valueOf(textField_mazeColumns.getText());
+//
+//        int[][] maze = generator.generateRandomMaze(rows,cols);
+//
+//        mazeDisplayer.drawMaze(maze);
+
+
+
         int rows = Integer.valueOf(textField_mazeRows.getText());
         int cols = Integer.valueOf(textField_mazeColumns.getText());
+        myviewmodel.generateMaze(rows,cols);
+        mazeDisplayer.drawMaze(myviewmodel.getMaze());
 
-        int[][] maze = generator.generateRandomMaze(rows,cols);
-
-        mazeDisplayer.drawMaze(maze);
     }
 
     public void solveMaze(ActionEvent actionEvent) {
+        myviewmodel.solveMaze();
     }
 
     public void NewMaze(ActionEvent actionEvent) {
-        if (generator == null)
-            generator = new MazeGenerator();
+//        if (generator == null)
+//            generator = new MazeGenerator();
 
         String row = textField_mazeRows.getText();
         String column = textField_mazeColumns.getText();
@@ -88,12 +102,14 @@ public class MyViewController implements Initializable {
             if (rows < 2 || rows > 1000 || cols < 2 || cols > 1000)
                 NewAlert("Please insert only integers between 2 - 1000");
             else{
-                int[][] maze = generator.generateRandomMaze(rows, cols);
+                myviewmodel.generateMaze(rows,cols);
+                mazeDisplayer.drawMaze(myviewmodel.getMaze());
 
-                mazeDisplayer.drawMaze(maze);
             }
             savebutton.setDisable(false);
         }
+        //mazeDisplayer.requestFocus();
+
     }
 
     public void SaveMaze(ActionEvent actionEvent) {
@@ -139,6 +155,7 @@ public class MyViewController implements Initializable {
     }
 
     public void keyPressed(KeyEvent keyEvent) {
+
         int row = mazeDisplayer.getPlayerRow();
         int col = mazeDisplayer.getPlayerCol();
 
@@ -153,6 +170,15 @@ public class MyViewController implements Initializable {
         setUpdatePlayerRow(row);
         setUpdatePlayerCol(col);
         keyEvent.consume(); // tell the event we already handled it, no more keypressed
+
+//        myviewmodel.movePlayer(keyEvent);
+//        keyEvent.consume(); // tell the event we already handled it, no more keypressed
+    }
+
+    public void setPlayerPosition(int row, int col){
+        mazeDisplayer.setPosition(row,col);
+        setUpdatePlayerRow(row);
+        setUpdatePlayerCol(col);
     }
 
     public void mouseClicked(MouseEvent mouseEvent) {
@@ -164,5 +190,44 @@ public class MyViewController implements Initializable {
         alert.setContentText(message);
         alert.show();
     }
+
+    @Override
+    public void update(Observable o, Object arg) {
+//        String change = (String)arg;
+//        switch (change){
+//            case "maze generated" -> mazeGenerated();
+//            case "player moved" -> playerMoved();
+//            case "maze solved" -> mazeSolved();
+//        }
+        if (o instanceof MyViewModel) {
+            if (mymaze == null)//generateMaze
+            {
+                mymaze = myviewmodel.getMaze();
+                mazeDisplayer.drawMaze(mymaze);
+            }
+
+        }
+    }
+
+    private void mazeGenerated() {
+        mazeDisplayer.drawMaze(myviewmodel.getMaze());
+        playerMoved();
+    }
+
+    private void playerMoved() {
+        setPlayerPosition(myviewmodel.getPlayerRow(),myviewmodel.getPlayerCol());
+    }
+
+
+    private void mazeSolved() {
+        mazeDisplayer.setSolution(myviewmodel.getSolution());
+    }
+
+
+    public void setMyViewModel( MyViewModel mvm){
+        this.myviewmodel = mvm;
+        this.myviewmodel.addObserver(this);
+    }
+
 
 }

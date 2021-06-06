@@ -1,5 +1,6 @@
 package View;
 
+import algorithms.search.Solution;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.canvas.Canvas;
@@ -7,6 +8,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import algorithms.mazeGenerators.Maze;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,7 +20,8 @@ public class MazeDisplayer extends Canvas {
     private int playerRow = 0;
     private int playerCol = 0;
 
-
+    private Solution solution;
+    private Maze maze;
 
     // getter and setters
     public int getPlayerRow() {
@@ -51,12 +54,7 @@ public class MazeDisplayer extends Canvas {
     }
 
 
-
-
-
-
-    private int[][] maze;
-    public void drawMaze(int[][] maze) {
+    public void drawMaze(Maze maze) {
 //        Alert alert = new Alert(Alert.AlertType.INFORMATION);
 //        alert.setContentText("Generating maze: " + maze.length + ", " + maze[0].length);
 //        alert.show();
@@ -69,8 +67,8 @@ public class MazeDisplayer extends Canvas {
         if (maze != null){
             double canvasHeight = getHeight();
             double canvasWidth = getWidth();
-            int rows = maze.length;
-            int cols = maze[0].length;
+            int rows = maze.getRows();
+            int cols = maze.getCols();
 
             double cellHight = canvasHeight / rows;
             double cellWidth = canvasWidth / cols;
@@ -81,9 +79,15 @@ public class MazeDisplayer extends Canvas {
 
 
             drawMazeWalls(graphicsContext,rows,cols,cellHight,cellWidth);
+            if (solution != null)
+                drawSolution(graphicsContext,cellHight,cellWidth);
             drawPlayer(graphicsContext,cellHight,cellWidth);
 
         }
+    }
+
+    private void drawSolution(GraphicsContext graphicsContext, double cellHight, double cellWidth) {
+
     }
 
 
@@ -98,7 +102,7 @@ public class MazeDisplayer extends Canvas {
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                if(maze[i][j] == 1){
+                if(maze.getMaze()[i][j] == 1){
                     double x = j * cellWidth;
                     double y = i * cellHight;
                     if (wallImage == null)
@@ -126,5 +130,10 @@ public class MazeDisplayer extends Canvas {
             graphicsContext.fillRect(x,y,cellWidth,cellHight);
         else
             graphicsContext.drawImage(playerImage,x,y,cellWidth,cellHight);
+    }
+
+    public void setSolution(Solution sol) {
+        this.solution = sol;
+        draw();
     }
 }
