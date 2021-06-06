@@ -3,6 +3,7 @@ package ViewModel;
 import Model.IModel;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 import algorithms.mazeGenerators.Maze;
@@ -13,6 +14,7 @@ import javafx.scene.input.KeyEvent;
 
 public class MyViewModel extends Observable implements Observer {
     private IModel model;
+    private Maze mymaze;
 
 
     public MyViewModel(IModel model) {
@@ -28,6 +30,7 @@ public class MyViewModel extends Observable implements Observer {
             setChanged();
             notifyObservers();
         }
+
     }
 
     public void generateMaze(int rows, int cols){
@@ -96,6 +99,18 @@ public class MyViewModel extends Observable implements Observer {
     }
 
     public void Save(File file){
-        this.model.Save(file);
+        this.model.SaveMaze(file);
     }
+    public void Load(File file){
+        try{this.model.LoadMaze(file);        }
+        catch(IOException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
+
+    public void ExitGame(){
+        this.model.ExitGame();
+    }
+
 }

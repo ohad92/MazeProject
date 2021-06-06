@@ -44,33 +44,34 @@ public class Main_NEW extends Application {
 
 
         myviewmodel.addObserver(myviewcontroller);
-        //SetStageCloseEvent(primaryStage, model);
+        CloseProgram(primaryStage, mymodel);
         primaryStage.show();
 
 
     }
-
-//    private void SetStageCloseEvent(Stage primaryStage, MyModel model) {
-//        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-//            public void handle(WindowEvent windowEvent) {
-//                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are you sure you want to exit?");
-//                alert.setHeaderText(null);
-//                Optional<ButtonType> result = alert.showAndWait();
-//                if (result.get() == ButtonType.OK){
-//                    // ... user chose OK
-//                    // Close program
-//                    model.stopServers();
-//                    primaryStage.close();
-//                } else {
-//                    // ... user chose CANCEL or closed the dialog
-//                    windowEvent.consume();
-//                }
-//            }
-//        });
-//    }
-
     public static void main(String[] args) {
         launch(args);
     }
+
+    private void CloseProgram(Stage primaryStage, MyModel mymodel) {
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent windowEvent) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are you sure you want to exit?");
+                alert.setHeaderText(null);
+                Optional<ButtonType> result = alert.showAndWait();
+                // if the user accept to exit
+                if (result.get() == ButtonType.OK){
+                    mymodel.stopServers();
+                    primaryStage.close();
+                // if the user denied the exit
+                }
+                else
+                    {
+                    windowEvent.consume();
+                }
+            }
+        });
+    }
+
 
 }

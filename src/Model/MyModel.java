@@ -6,6 +6,8 @@ import Server.*;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -39,7 +41,10 @@ public class MyModel extends Observable implements IModel{
         this.serverSolveMaze.start();
 
     }
-
+    public void stopServers(){
+        this.serverMazeGenerator.stop();
+        this.serverSolveMaze.stop();
+    }
     public void generateMaze(int rows, int cols) {
         System.out.println("generating maze");
 
@@ -90,19 +95,19 @@ public class MyModel extends Observable implements IModel{
     public void updatePlayerLocation(MovementDirection direction) {
         switch (direction) {
             case UP -> {
-                if (playerRow > 0)
+                if (playerRow > 0 && mymaze.getMaze()[playerRow-1][playerCol] != 1)
                     movePlayer(playerRow - 1, playerCol);
             }
             case DOWN -> {
-                if (playerRow < mymaze.getRows() - 1)
+                if (playerRow < mymaze.getRows() - 1 && mymaze.getMaze()[playerRow+1][playerCol] != 1)
                     movePlayer(playerRow + 1, playerCol);
             }
             case LEFT -> {
-                if (playerCol > 0)
+                if (playerCol > 0 && mymaze.getMaze()[playerRow][playerCol-1] != 1)
                     movePlayer(playerRow, playerCol - 1);
             }
             case RIGHT -> {
-                if (playerCol < mymaze.getCols() - 1)
+                if (playerCol < mymaze.getCols() - 1 && mymaze.getMaze()[playerRow][playerCol+1] != 1 )
                     movePlayer(playerRow, playerCol + 1);
             }
         }
@@ -112,22 +117,59 @@ public class MyModel extends Observable implements IModel{
         this.playerRow = row;
         this.playerCol = col;
         setChanged();
-        notifyObservers("player moved");
+        notifyObservers();
     }
 
     public int getPlayerRow() {
-        return 0;
+        return this.playerRow;
     }
 
     public int getPlayerCol() {
-        return 0;
+        return this.playerCol;
     }
 
     public void assignObserver(Observer o) {
-
+        this.addObserver(o);
     }
 
-    public void Save(File file) {
-
+    public void SaveMaze(File file) {
+        try{
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            ObjectOutputStream out = new ObjectOutputStream(fileOutputStream);
+            out.writeObject(this.mymaze);
+            out.flush();
+            out.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
+
+    public void LoadMaze(File file) {
+        try {
+            FileInputStream fileinputstream = new FileInputStream(file);
+            ObjectInputStream objectinputstream = new ObjectInputStream(fileinputstream);
+            Maze loadedMaze = (Maze)objectinputstream.readObject();
+            this.mymaze = loadedMaze;
+            setChanged();
+            notifyObservers();
+            objectinputstream.close();
+        }
+        catch(IOException | ClassNotFoundException e ){
+            e.printStackTrace();
+        }
+    }
+
+    public void ExitGame() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Thank you for playing with our application!");
+        alert.setHeaderText(null);
+        Optional<ButtonType> result = alert.showAndWait();
+        // if the user accept to exit
+        if (result.get() == ButtonType.OK) {
+            this.stopServers();
+            System.exit(0);
+
+        }
+    }
+
 }

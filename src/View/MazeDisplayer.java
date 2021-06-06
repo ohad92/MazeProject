@@ -60,7 +60,7 @@ public class MazeDisplayer extends Canvas {
 //        alert.show();
         this.maze = maze;
         draw();
-        setPosition(0,0); // set again the position of the player when pressing generatemaze
+        setPosition(playerRow,playerCol); // set again the position of the player when pressing generatemaze
     }
 
     private void draw(){

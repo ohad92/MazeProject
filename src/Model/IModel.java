@@ -1,6 +1,7 @@
 package Model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Observer;
 import algorithms.mazeGenerators.*;
 
@@ -16,5 +17,8 @@ public interface IModel {
     int getPlayerRow();
     int getPlayerCol();
     void assignObserver(Observer o); // because interface cannot extend class
-    void Save(File file);
+    void SaveMaze(File file);
+    void LoadMaze(File file)throws IOException, ClassNotFoundException;
+    void ExitGame();
+
 }
