@@ -38,7 +38,7 @@ public class MyViewController implements Initializable, Observer {
     private int playercol;
     public static Stage window;
 
-    private MazeGenerator generator;
+    //private MazeGenerator generator;
 
     StringProperty updatePlayerRow = new SimpleStringProperty();
     StringProperty updatePlayerCol = new SimpleStringProperty();
@@ -68,21 +68,31 @@ public class MyViewController implements Initializable, Observer {
 
 
     public void generateMaze(ActionEvent actionEvent) {
-//        if (generator == null)
-//            generator = new MazeGenerator();
+
 //        int rows = Integer.valueOf(textField_mazeRows.getText());
 //        int cols = Integer.valueOf(textField_mazeColumns.getText());
+//        myviewmodel.generateMaze(rows,cols);
+//        mazeDisplayer.drawMaze(myviewmodel.getMaze());
 //
-//        int[][] maze = generator.generateRandomMaze(rows,cols);
-//
-//        mazeDisplayer.drawMaze(maze);
+        String row = textField_mazeRows.getText();
+        String column = textField_mazeColumns.getText();
+        if (!row.matches("\\d*") || !column.matches("\\d*") || row.equals("") || column.equals("")){
+            NewAlert("Please insert only integers between 2 - 1000","WARNING");
+        }
+        else {
 
+            int rows = Integer.valueOf(textField_mazeRows.getText());
+            int cols = Integer.valueOf(textField_mazeColumns.getText());
+            if (rows < 2 || rows > 1000 || cols < 2 || cols > 1000)
+                NewAlert("Please insert only integers between 2 - 1000","WARNING");
+            else{
+                myviewmodel.generateMaze(rows,cols);
+                mazeDisplayer.drawMaze(myviewmodel.getMaze());
 
-
-        int rows = Integer.valueOf(textField_mazeRows.getText());
-        int cols = Integer.valueOf(textField_mazeColumns.getText());
-        myviewmodel.generateMaze(rows,cols);
-        mazeDisplayer.drawMaze(myviewmodel.getMaze());
+            }
+            savebutton.setDisable(false);
+        }
+        //mazeDisplayer.requestFocus();
 
     }
 
@@ -191,11 +201,11 @@ public class MyViewController implements Initializable, Observer {
         keyEvent.consume(); // tell the event we already handled it, no more keypressed
     }
 
-    public void setPlayerPosition(int row, int col){
-        mazeDisplayer.setPosition(row,col);
-        setUpdatePlayerRow(row);
-        setUpdatePlayerCol(col);
-    }
+//    public void setPlayerPosition(int row, int col){
+//        mazeDisplayer.setPosition(row,col);
+//        setUpdatePlayerRow(row);
+//        setUpdatePlayerCol(col);
+//    }
 
     public void mouseClicked(MouseEvent mouseEvent) {
         mazeDisplayer.requestFocus();

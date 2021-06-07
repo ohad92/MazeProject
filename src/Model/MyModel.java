@@ -2,6 +2,7 @@ package Model;
 
 import Client.*;
 import IO.MyDecompressorInputStream;
+import IO.SimpleDecompressorInputStream;
 import Server.*;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.Position;
@@ -60,7 +61,7 @@ public class MyModel extends Observable implements IModel{
                         toServer.writeObject(mazeDimensions);
                         toServer.flush();
                         byte[] compressedMaze = (byte[])fromServer.readObject();
-                        InputStream is = new MyDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
+                        InputStream is = new SimpleDecompressorInputStream(new ByteArrayInputStream(compressedMaze));
                         byte[] decompressedMaze = new byte[12 + (rows+2) * (cols+2)];
                         is.read(decompressedMaze);
                         MyModel.this.mymaze = new Maze(decompressedMaze);
@@ -72,6 +73,8 @@ public class MyModel extends Observable implements IModel{
             client.communicateWithServer();
             PlayerPosision.setRowIndex(this.mymaze.getStartPosition().getRowIndex());
             PlayerPosision.setColIndex(this.mymaze.getStartPosition().getColumnIndex());
+            //playerRow = this.mymaze.getStartPosition().getRowIndex();
+            //playerCol = this.mymaze.getStartPosition().getColumnIndex();
 
         } catch (UnknownHostException var1) {
             var1.printStackTrace();
@@ -109,6 +112,22 @@ public class MyModel extends Observable implements IModel{
             case RIGHT -> {
                 if (playerCol < mymaze.getCols() - 1 && mymaze.getMaze()[playerRow][playerCol+1] != 1 )
                     movePlayer(playerRow, playerCol + 1);
+            }
+            case UPRIGHT -> {
+                if (playerRow > 0 && playerCol < mymaze.getCols() - 1 && mymaze.getMaze()[playerRow-1][playerCol+1] != 1)
+                    movePlayer(playerRow - 1, playerCol + 1);
+            }
+            case UPLEFT -> {
+                if (playerRow > 0 && playerCol > 0 && mymaze.getMaze()[playerRow-1][playerCol-1] != 1)
+                    movePlayer(playerRow - 1, playerCol - 1);
+            }
+            case DOWNRIGHT -> {
+                if (playerRow < mymaze.getRows() - 1 && playerCol < mymaze.getCols() - 1 && mymaze.getMaze()[playerRow+1][playerCol+1] != 1)
+                    movePlayer(playerRow + 1, playerCol + 1);
+            }
+            case DOWNLEFT -> {
+                if (playerRow < mymaze.getRows() - 1 && playerCol > 0 && mymaze.getMaze()[playerRow+1][playerCol-1] != 1 )
+                    movePlayer(playerRow + 1, playerCol - 1);
             }
         }
     }

@@ -70,19 +70,18 @@ public class MyViewModel extends Observable implements Observer {
                 direction = MovementDirection.RIGHT;
                 break;
 
-
-//            case NUMPAD1:
-//                direction = ?;
-//                break;
-//            case NUMPAD3:
-//                direction = ?;
-//                break;
-//            case NUMPAD7:
-//                direction = ?;
-//                break;
-//            case NUMPAD9:
-//                direction = ?;
-//                break;
+            case NUMPAD9:
+                direction = MovementDirection.UPRIGHT;
+                break;
+            case NUMPAD7:
+                direction = MovementDirection.UPLEFT;
+                break;
+            case NUMPAD3:
+                direction = MovementDirection.DOWNRIGHT;
+                break;
+            case NUMPAD1:
+                direction = MovementDirection.DOWNLEFT;
+                break;
             default : {
                 return;
             }
