@@ -36,6 +36,8 @@ public class MyViewController implements Initializable, Observer {
     private Maze mymaze;
     private int playerrow;
     private int playercol;
+    private int targetrow;
+    private int targetcol;
     public static Stage window;
 
     //private MazeGenerator generator;
@@ -87,6 +89,11 @@ public class MyViewController implements Initializable, Observer {
                 NewAlert("Please insert only integers between 2 - 1000","WARNING");
             else{
                 myviewmodel.generateMaze(rows,cols);
+
+                mazeDisplayer.setPosition(mymaze.getStartPosition().getRowIndex(),mymaze.getStartPosition().getColumnIndex(),mymaze.getGoalPosition().getRowIndex(),mymaze.getGoalPosition().getColumnIndex());
+                setUpdatePlayerRow(mymaze.getStartPosition().getRowIndex());
+                setUpdatePlayerCol(mymaze.getStartPosition().getColumnIndex());
+
                 mazeDisplayer.drawMaze(myviewmodel.getMaze());
 
             }
@@ -101,9 +108,11 @@ public class MyViewController implements Initializable, Observer {
     }
 
     public void NewMaze(ActionEvent actionEvent) {
-//        if (generator == null)
-//            generator = new MazeGenerator();
-
+//        int rows = Integer.valueOf(textField_mazeRows.getText());
+//        int cols = Integer.valueOf(textField_mazeColumns.getText());
+//        myviewmodel.generateMaze(rows,cols);
+//        mazeDisplayer.drawMaze(myviewmodel.getMaze());
+//
         String row = textField_mazeRows.getText();
         String column = textField_mazeColumns.getText();
         if (!row.matches("\\d*") || !column.matches("\\d*") || row.equals("") || column.equals("")){
@@ -117,13 +126,17 @@ public class MyViewController implements Initializable, Observer {
                 NewAlert("Please insert only integers between 2 - 1000","WARNING");
             else{
                 myviewmodel.generateMaze(rows,cols);
+
+                mazeDisplayer.setPosition(mymaze.getStartPosition().getRowIndex(),mymaze.getStartPosition().getColumnIndex(),mymaze.getGoalPosition().getRowIndex(),mymaze.getGoalPosition().getColumnIndex());
+                setUpdatePlayerRow(mymaze.getStartPosition().getRowIndex());
+                setUpdatePlayerCol(mymaze.getStartPosition().getColumnIndex());
+
                 mazeDisplayer.drawMaze(myviewmodel.getMaze());
 
             }
             savebutton.setDisable(false);
         }
         //mazeDisplayer.requestFocus();
-
     }
 
     public void SaveMaze(ActionEvent actionEvent) {
@@ -245,6 +258,8 @@ public class MyViewController implements Initializable, Observer {
                 mymaze = myviewmodel.getMaze();
                 playerrow = myviewmodel.getPlayerRow();
                 playercol = myviewmodel.getPlayerCol();
+                targetrow = myviewmodel.getTargetRow();
+                targetcol = myviewmodel.getTargetCol();
                 mazeDisplayer.drawMaze(mymaze);
             }
             else {
@@ -253,19 +268,21 @@ public class MyViewController implements Initializable, Observer {
                 {
                     playerrow = myviewmodel.getPlayerRow();
                     playercol = myviewmodel.getPlayerCol();
-                    if (playerrow==9954)//Solve Maze
+                    targetrow = myviewmodel.getTargetRow();
+                    targetcol = myviewmodel.getTargetCol();
+                    if (playerrow==targetcol && playercol==targetrow) //show solution
                     {
 //                        solution = viewModel.getSolution();
 //                        if (solution != null)
 //                        this.mazeDisplayer.solve(solution);
-                        System.out.println("hi");
+                        NewAlert("you have solved the maze!","INFORMATION");
                     }
-//                    else {
-                    mazeDisplayer.setPosition(playerrow, playercol);
-                    setUpdatePlayerRow(playerrow);
-                    setUpdatePlayerCol(playercol);
-                    mazeDisplayer.drawMaze(maze);
-
+                    else {
+                        mazeDisplayer.setPosition(playerrow, playercol, targetrow, targetcol);
+                        setUpdatePlayerRow(playerrow);
+                        setUpdatePlayerCol(playercol);
+                        mazeDisplayer.drawMaze(maze);
+                    }
 
                         //if ((viewmodelcol == mymaze.getGoalPosition().getColumnIndex()) && (viewmodelrow == mymaze.getGoalPosition().getRowIndex()))
                         //finish();
@@ -276,6 +293,8 @@ public class MyViewController implements Initializable, Observer {
                     mymaze = maze;
                     playerrow = myviewmodel.getPlayerRow();
                     playercol = myviewmodel.getPlayerCol();
+                    targetrow = myviewmodel.getTargetRow();
+                    targetcol = myviewmodel.getTargetCol();
                     mazeDisplayer.drawMaze(maze);
                 }
         }

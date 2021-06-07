@@ -14,8 +14,11 @@ public interface IModel {
     void solveMaze();
     Solution getSolution();
     void updatePlayerLocation(MovementDirection direction);
+    void movePlayer(int row,int col);
     int getPlayerRow();
     int getPlayerCol();
+    int getTargetRow();
+    int getTargetCol();
     void assignObserver(Observer o); // because interface cannot extend class
     void SaveMaze(File file);
     void LoadMaze(File file)throws IOException, ClassNotFoundException;

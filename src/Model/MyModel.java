@@ -22,6 +22,8 @@ public class MyModel extends Observable implements IModel{
     private Solution solution;
     private int playerRow;
     private int playerCol;
+    private int TargetRow;
+    private int TargetCol;
     private static Server serverMazeGenerator;
     private static Server serverSolveMaze;
     private ArrayList<Position> solutionpath;
@@ -71,10 +73,10 @@ public class MyModel extends Observable implements IModel{
                 }
             });
             client.communicateWithServer();
-            PlayerPosision.setRowIndex(this.mymaze.getStartPosition().getRowIndex());
-            PlayerPosision.setColIndex(this.mymaze.getStartPosition().getColumnIndex());
-            //playerRow = this.mymaze.getStartPosition().getRowIndex();
-            //playerCol = this.mymaze.getStartPosition().getColumnIndex();
+            //PlayerPosision.setRowIndex(this.mymaze.getStartPosition().getRowIndex());
+            //PlayerPosision.setColIndex(this.mymaze.getStartPosition().getColumnIndex());
+            movePlayer(mymaze.getStartPosition().getRowIndex(),mymaze.getStartPosition().getColumnIndex());
+            setTargetOnMaze(mymaze.getGoalPosition().getRowIndex(),mymaze.getGoalPosition().getColumnIndex());
 
         } catch (UnknownHostException var1) {
             var1.printStackTrace();
@@ -132,9 +134,16 @@ public class MyModel extends Observable implements IModel{
         }
     }
 
-    private void movePlayer(int row, int col){
+    public void movePlayer(int row, int col){
         this.playerRow = row;
         this.playerCol = col;
+        setChanged();
+        notifyObservers();
+    }
+
+    public void setTargetOnMaze(int row, int col){
+        this.TargetRow = row;
+        this.TargetCol = col;
         setChanged();
         notifyObservers();
     }
@@ -145,6 +154,14 @@ public class MyModel extends Observable implements IModel{
 
     public int getPlayerCol() {
         return this.playerCol;
+    }
+
+    public int getTargetRow() {
+        return this.TargetRow;
+    }
+
+    public int getTargetCol() {
+        return this.TargetCol;
     }
 
     public void assignObserver(Observer o) {

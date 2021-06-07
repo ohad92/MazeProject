@@ -16,9 +16,12 @@ import java.io.FileNotFoundException;
 public class MazeDisplayer extends Canvas {
     StringProperty imageFileNameWall = new SimpleStringProperty();
     StringProperty imageFileNamePlayer = new SimpleStringProperty();
+    StringProperty imageFileNameTarget = new SimpleStringProperty();
 
     private int playerRow = 0;
     private int playerCol = 0;
+    private int TargetRow = 0;
+    private int TargetCol = 0;
 
     private Solution solution;
     private Maze maze;
@@ -27,13 +30,17 @@ public class MazeDisplayer extends Canvas {
     public int getPlayerRow() {
         return playerRow;
     }
-    public int getPlayerCol() {
-        return playerCol;
+    public int getPlayerCol() { return playerCol; }
+    public int getTargetRow() {
+        return TargetRow;
     }
+    public int getTargetCol() { return TargetCol; }
 
-    public void setPosition(int row, int col){
-        this.playerRow = row;
-        this.playerCol = col;
+    public void setPosition(int playerrow, int playercol, int targetrow, int targetcol){
+        this.playerRow = playerrow;
+        this.playerCol = playercol;
+        this.TargetRow = targetrow;
+        this.TargetCol = targetcol;
         draw(); // we call draw here because we want to draw the new position
     }
 
@@ -52,7 +59,13 @@ public class MazeDisplayer extends Canvas {
     public void setImageFileNamePlayer(String imageFileNamePlayer) {
         this.imageFileNamePlayer.set(imageFileNamePlayer);
     }
+    public String getImageFileNameTarget() {
+        return imageFileNameTarget.get();
+    }
 
+    public void setImageFileNameTarget(String imageFileNameTarget) {
+        this.imageFileNameTarget.set(imageFileNameTarget);
+    }
 
     public void drawMaze(Maze maze) {
 //        Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -60,7 +73,7 @@ public class MazeDisplayer extends Canvas {
 //        alert.show();
         this.maze = maze;
         draw();
-        setPosition(playerRow,playerCol); // set again the position of the player when pressing generatemaze
+        setPosition(playerRow,playerCol,TargetRow,TargetCol); // set again the position of the player when pressing generatemaze
     }
 
     private void draw(){
@@ -82,6 +95,7 @@ public class MazeDisplayer extends Canvas {
             if (solution != null)
                 drawSolution(graphicsContext,cellHight,cellWidth);
             drawPlayer(graphicsContext,cellHight,cellWidth);
+            drawTarget(graphicsContext,cellHight,cellWidth);
 
         }
     }
@@ -130,6 +144,24 @@ public class MazeDisplayer extends Canvas {
             graphicsContext.fillRect(x,y,cellWidth,cellHight);
         else
             graphicsContext.drawImage(playerImage,x,y,cellWidth,cellHight);
+    }
+
+    private void drawTarget(GraphicsContext graphicsContext, double cellHight, double cellWidth) {
+        Image TargetImage = null;
+        try {
+            TargetImage = new Image(new FileInputStream(getImageFileNameTarget()));
+        } catch (FileNotFoundException e) {
+            System.out.println("There is no target image");
+        }
+        graphicsContext.setFill(Color.BLACK);
+
+        double x = getTargetRow() * cellWidth;
+        double y = getTargetCol() * cellHight;
+
+        if (TargetImage == null)
+            graphicsContext.fillRect(x,y,cellWidth,cellHight);
+        else
+            graphicsContext.drawImage(TargetImage,x,y,cellWidth,cellHight);
     }
 
     public void setSolution(Solution sol) {

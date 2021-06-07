@@ -34,8 +34,6 @@ public class MyViewModel extends Observable implements Observer {
     }
 
     public void generateMaze(int rows, int cols){
-        System.out.println("mymodel");
-
         model.generateMaze(rows,cols);
     }
 
@@ -89,12 +87,16 @@ public class MyViewModel extends Observable implements Observer {
         model.updatePlayerLocation(direction);
     }
 
-    public int getPlayerRow(){
-        return model.getPlayerRow();
-    }
+    public int getPlayerRow(){  return model.getPlayerRow(); }
 
     public int getPlayerCol(){
         return model.getPlayerCol();
+    }
+
+    public int getTargetRow(){  return model.getTargetRow(); }
+
+    public int getTargetCol(){
+        return model.getTargetCol();
     }
 
     public void Save(File file){
