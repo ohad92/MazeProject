@@ -22,6 +22,9 @@ public class MyViewModel extends Observable implements Observer {
         this.model.assignObserver(this);  // when the model update, the viewmodel will know it.
     }
 
+    public void setmazenotnull(Maze maze){
+        model.setmazenotnull(maze);
+    }
 
     @Override
     public void update(Observable o, Object arg) {
@@ -32,6 +35,7 @@ public class MyViewModel extends Observable implements Observer {
         }
 
     }
+
 
     public void generateMaze(int rows, int cols){
         model.generateMaze(rows,cols);

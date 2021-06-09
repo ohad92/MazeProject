@@ -26,14 +26,10 @@ public class MyModel extends Observable implements IModel{
     private int TargetCol;
     private static Server serverMazeGenerator;
     private static Server serverSolveMaze;
-    private ArrayList<Position> solutionpath;
-    private Position PlayerPosision;
-
+    private boolean isMazeExist=false;
 
     public MyModel() {
         this.mymaze = null;
-        PlayerPosision = new Position(0,0);
-        solutionpath = new ArrayList<>();
         //propperties = Server.Configurations.loadConfig();
         }
 
@@ -50,8 +46,6 @@ public class MyModel extends Observable implements IModel{
     }
     public void generateMaze(int rows, int cols) {
         System.out.println("generating maze");
-
-        solutionpath = new ArrayList<>();
         try {
             Client client = new Client(InetAddress.getLocalHost(), 5400, new IClientStrategy() {
                 public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
@@ -73,10 +67,10 @@ public class MyModel extends Observable implements IModel{
                 }
             });
             client.communicateWithServer();
-            //PlayerPosision.setRowIndex(this.mymaze.getStartPosition().getRowIndex());
-            //PlayerPosision.setColIndex(this.mymaze.getStartPosition().getColumnIndex());
             movePlayer(mymaze.getStartPosition().getRowIndex(),mymaze.getStartPosition().getColumnIndex());
             setTargetOnMaze(mymaze.getGoalPosition().getRowIndex(),mymaze.getGoalPosition().getColumnIndex());
+            isMazeExist=true;
+
 
         } catch (UnknownHostException var1) {
             var1.printStackTrace();
@@ -90,11 +84,40 @@ public class MyModel extends Observable implements IModel{
     }
 
     public void solveMaze() {
+        if(isMazeExist){
+            solveMazeThroughSolverServer();
+            setChanged();
+            notifyObservers();
+        }
+    }
 
+    private void solveMazeThroughSolverServer() {
+        try {
+            Client client = new Client(InetAddress.getLocalHost(), 5401, new IClientStrategy() {
+                @Override
+                public void clientStrategy(InputStream inFromServer, OutputStream outToServer) {
+                    try {
+                        ObjectOutputStream toServer = new ObjectOutputStream(outToServer);
+                        ObjectInputStream fromServer = new ObjectInputStream(inFromServer);
+                        toServer.flush();
+                        toServer.writeObject(mymaze);
+                        toServer.flush();
+                        Solution mazeSolution = (Solution)fromServer.readObject();//do something with the solution
+                        solution = mazeSolution;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            /* invoking the anonymous "clientStrategy" implemented above */
+            client.communicateWithServer();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     public Solution getSolution() {
-        return null;
+        return solution;
     }
 
     public void updatePlayerLocation(MovementDirection direction) {
@@ -187,6 +210,8 @@ public class MyModel extends Observable implements IModel{
             ObjectInputStream objectinputstream = new ObjectInputStream(fileinputstream);
             Maze loadedMaze = (Maze)objectinputstream.readObject();
             this.mymaze = loadedMaze;
+            movePlayer(this.mymaze.getStartPosition().getRowIndex(),this.mymaze.getStartPosition().getColumnIndex());
+            setTargetOnMaze(this.mymaze.getGoalPosition().getRowIndex(),this.mymaze.getGoalPosition().getColumnIndex());
             setChanged();
             notifyObservers();
             objectinputstream.close();
@@ -206,6 +231,11 @@ public class MyModel extends Observable implements IModel{
             System.exit(0);
 
         }
+    }
+
+    public void setmazenotnull(Maze maze){
+        this.mymaze=maze;
+        isMazeExist = true;
     }
 
 }

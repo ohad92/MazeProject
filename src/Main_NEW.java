@@ -47,7 +47,6 @@ public class Main_NEW extends Application {
         CloseProgram(primaryStage, mymodel);
         primaryStage.show();
 
-
     }
     public static void main(String[] args) {
         launch(args);

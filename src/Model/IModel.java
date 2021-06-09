@@ -23,5 +23,6 @@ public interface IModel {
     void SaveMaze(File file);
     void LoadMaze(File file)throws IOException, ClassNotFoundException;
     void ExitGame();
+    void setmazenotnull(Maze maze);
 
 }

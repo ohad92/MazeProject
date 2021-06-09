@@ -1,5 +1,8 @@
 package View;
 
+import algorithms.mazeGenerators.Position;
+import algorithms.search.AState;
+import algorithms.search.MazeState;
 import algorithms.search.Solution;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -9,11 +12,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import algorithms.mazeGenerators.Maze;
+import java.util.ArrayList;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class MazeDisplayer extends Canvas {
+    private Solution solutionObj;
     StringProperty imageFileNameWall = new SimpleStringProperty();
     StringProperty imageFileNamePlayer = new SimpleStringProperty();
     StringProperty imageFileNameTarget = new SimpleStringProperty();
@@ -31,10 +36,9 @@ public class MazeDisplayer extends Canvas {
         return playerRow;
     }
     public int getPlayerCol() { return playerCol; }
-    public int getTargetRow() {
-        return TargetRow;
-    }
+    public int getTargetRow() { return TargetRow; }
     public int getTargetCol() { return TargetCol; }
+    public void setSolutionNull() {this.solution = null;}
 
     public void setPosition(int playerrow, int playercol, int targetrow, int targetcol){
         this.playerRow = playerrow;
@@ -73,7 +77,7 @@ public class MazeDisplayer extends Canvas {
 //        alert.show();
         this.maze = maze;
         draw();
-        setPosition(playerRow,playerCol,TargetRow,TargetCol); // set again the position of the player when pressing generatemaze
+        setPosition(playerRow,playerCol,TargetRow,TargetCol); // set again the position of the player and the target when pressing generatemaze
     }
 
     private void draw(){
@@ -93,14 +97,37 @@ public class MazeDisplayer extends Canvas {
 
             drawMazeWalls(graphicsContext,rows,cols,cellHight,cellWidth);
             if (solution != null)
-                drawSolution(graphicsContext,cellHight,cellWidth);
+                drawSolution(graphicsContext,rows,cols,cellHight,cellWidth);
             drawPlayer(graphicsContext,cellHight,cellWidth);
             drawTarget(graphicsContext,cellHight,cellWidth);
 
         }
     }
+    public void drawMazeSolution(Solution solution) {
+        this.solution = solution;
+        draw();
+    }
 
-    private void drawSolution(GraphicsContext graphicsContext, double cellHight, double cellWidth) {
+    public void drawSolution(GraphicsContext graphicsContext,int rows, int cols, double cellHight, double cellWidth){
+        Image solImage = null;
+        try {
+            solImage = new Image(new FileInputStream((getImageFileNameTarget())));
+        } catch (FileNotFoundException e) {
+            System.out.println("There is no solve image");
+        }
+        graphicsContext.setFill(Color.BLUE);
+        //maze.printRealMaze();
+        ArrayList<AState> b = this.solution.getSolutionPath();
+
+        for (int i = 0; i < b.size(); i++) {
+            Position p = ((MazeState) b.get(i)).getCurrent();
+            double x = p.getColumnIndex() * cellWidth;
+            double y = p.getRowIndex() * cellHight;
+//            if (solImage == null)
+                graphicsContext.fillRect(x,y,cellWidth,cellHight);
+//            else
+//                graphicsContext.drawImage(solImage,x,y,cellWidth,cellHight);
+        }
 
     }
 
@@ -155,8 +182,8 @@ public class MazeDisplayer extends Canvas {
         }
         graphicsContext.setFill(Color.BLACK);
 
-        double x = getTargetRow() * cellWidth;
-        double y = getTargetCol() * cellHight;
+        double x = getTargetCol() * cellWidth;
+        double y = getTargetRow() * cellHight;
 
         if (TargetImage == null)
             graphicsContext.fillRect(x,y,cellWidth,cellHight);
@@ -164,8 +191,4 @@ public class MazeDisplayer extends Canvas {
             graphicsContext.drawImage(TargetImage,x,y,cellWidth,cellHight);
     }
 
-    public void setSolution(Solution sol) {
-        this.solution = sol;
-        draw();
-    }
 }
