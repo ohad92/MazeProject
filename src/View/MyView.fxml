@@ -54,9 +54,9 @@
     </left>
     <bottom>
         <HBox BorderPane.alignment="CENTER">
-            <children>
+            <!--children>
                 <Label text="Status bar" />
-            </children>
+            </children-->
         </HBox>
     </bottom>
     <top>

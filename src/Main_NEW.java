@@ -37,6 +37,7 @@ public class Main_NEW extends Application {
         FXMLLoader fxmlloader = new FXMLLoader(getClass().getResource("/View/MyView.fxml"));
         Parent root = fxmlloader.load();
         Scene scene = new Scene(root,800,600);
+        //Scene scene = new Scene(root,579,426);
         primaryStage.setScene(scene);
 
 
