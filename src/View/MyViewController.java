@@ -16,6 +16,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
@@ -48,9 +49,11 @@ public class MyViewController implements IView,Initializable, Observer {
     //public static Stage window;
     private static MediaPlayer mediaPlayer;
     private static MediaPlayer mediaWin;
+    public Pane mazepane;
 
     private boolean songisinoff;
     private boolean winsongonoff;
+    private boolean showvictoryimage;
 
     StringProperty updatePlayerRow = new SimpleStringProperty();
     StringProperty updatePlayerCol = new SimpleStringProperty();
@@ -87,6 +90,7 @@ public class MyViewController implements IView,Initializable, Observer {
 //        mazeDisplayer.drawMaze(myviewmodel.getMaze());
 //
         solveMaze.setDisable(false);
+        showvictoryimage = false;
         String row = textField_mazeRows.getText();
         String column = textField_mazeColumns.getText();
         if (!row.matches("\\d*") || !column.matches("\\d*") || row.equals("") || column.equals("")){
@@ -300,6 +304,7 @@ public class MyViewController implements IView,Initializable, Observer {
                         WinSound(new ActionEvent());
                         mymaze = null;
                         solveMaze.setDisable(true);
+                        showvictoryimage = true;
                     }
                     else {
                         mazeDisplayer.setPosition(playerrow, playercol, targetrow, targetcol);
@@ -382,6 +387,27 @@ public class MyViewController implements IView,Initializable, Observer {
             mazeDisplayer.draw();
 
         }
+    }
+
+    public void applyNewSize(Scene scene) {
+        scene.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+                if (!showvictoryimage)
+                    mazeDisplayer.draw();
+                else
+                    mazeDisplayer.drawwin();
+            }
+        });
+        scene.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+                if (!showvictoryimage)
+                    mazeDisplayer.draw();
+                else
+                    mazeDisplayer.drawwin();
+            }
+        });
     }
 
 }

@@ -43,6 +43,7 @@ public class MazeDisplayer extends Canvas {
     public int getTargetCol() { return TargetCol; }
     public void setSolutionNull() {this.solution = null;}
     public void setsolvedtrue() {this.solved = true;}
+    public boolean getsolvedtrue(){return this.solved;}
 
     public void setPosition(int playerrow, int playercol, int targetrow, int targetcol){
         this.playerRow = playerrow;
@@ -118,7 +119,7 @@ public class MazeDisplayer extends Canvas {
         }
     }
 
-    private void drawwin(GraphicsContext graphicsContext, double cellHight, double cellWidth) {
+    public void drawwin(GraphicsContext graphicsContext, double cellHight, double cellWidth) {
         Image winImage = null;
         try {
             winImage = new Image(new FileInputStream(getImageFileNameWin()));
@@ -126,10 +127,25 @@ public class MazeDisplayer extends Canvas {
             System.out.println("There is no win image");
         }
         graphicsContext.setFill(Color.GREEN);
-        graphicsContext.drawImage(winImage,0,0,cellWidth,cellHight);
+        graphicsContext.drawImage(winImage,0,0,cellHight,cellWidth);
+    }
+    public void drawwin() {
+        double canvasHeight = getHeight();
+        double canvasWidth = getWidth();
+
+        GraphicsContext graphicsContext = getGraphicsContext2D();
+        //clear the canvas
+        graphicsContext.clearRect(0,0,canvasHeight,canvasWidth);
+        Image winImage = null;
+        try {
+            winImage = new Image(new FileInputStream(getImageFileNameWin()));
+        } catch (FileNotFoundException e) {
+            System.out.println("There is no win image");
+        }
+        graphicsContext.drawImage(winImage,0,0,canvasWidth,canvasHeight);
     }
 
-    public void drawMazeSolution(Solution solution) {
+        public void drawMazeSolution(Solution solution) {
         if (this.solution == null){
             this.solution = solution;
             draw();

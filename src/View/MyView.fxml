@@ -97,9 +97,9 @@
         </VBox>
     </top>
     <center>
-        <Pane BorderPane.alignment="CENTER">
+        <Pane fx:id="mazepane" BorderPane.alignment="CENTER">
             <children>
-                <MazeDisplayer onKeyPressed="#keyPressed" onMouseClicked="#MouseEvent" fx:id="mazeDisplayer" imageFileNameWall="./resources/images/wall.png" imageFileNamePlayer="./resources/images/harry_potter_player.png" imageFileNameTarget="./resources/images/harry_potter_snitch.jpg" imageFileNameWin="./resources/images/harry_potter_win.jpg" height="400.0" width="400.0" />
+                <MazeDisplayer onKeyPressed="#keyPressed" onMouseClicked="#MouseEvent" fx:id="mazeDisplayer" imageFileNameWall="./resources/images/wall.png" imageFileNamePlayer="./resources/images/harry_potter_player.png" imageFileNameTarget="./resources/images/harry_potter_snitch.jpg" imageFileNameWin="./resources/images/harry_potter_win.jpg" height="${mazepane.height}" width="${mazepane.width}" />
             </children>
             <padding>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
