@@ -126,37 +126,6 @@ public class MyViewController implements Initializable, Observer {
         mazeDisplayer.drawMazeSolution(myviewmodel.getSolution());
     }
 
-//    public void NewMaze(ActionEvent actionEvent) {
-//        int rows = Integer.valueOf(textField_mazeRows.getText());
-//        int cols = Integer.valueOf(textField_mazeColumns.getText());
-//        myviewmodel.generateMaze(rows,cols);
-//        mazeDisplayer.drawMaze(myviewmodel.getMaze());
-//
-//        String row = textField_mazeRows.getText();
-//        String column = textField_mazeColumns.getText();
-//        if (!row.matches("\\d*") || !column.matches("\\d*") || row.equals("") || column.equals("")){
-//            NewAlert("Please insert only integers between 2 - 1000","WARNING");
-//        }
-//        else {
-//
-//            int rows = Integer.valueOf(textField_mazeRows.getText());
-//            int cols = Integer.valueOf(textField_mazeColumns.getText());
-//            if (rows < 2 || rows > 1000 || cols < 2 || cols > 1000)
-//                NewAlert("Please insert only integers between 2 - 1000","WARNING");
-//            else{
-//                myviewmodel.generateMaze(rows,cols);
-//
-//                mazeDisplayer.setPosition(mymaze.getStartPosition().getRowIndex(),mymaze.getStartPosition().getColumnIndex(),mymaze.getGoalPosition().getRowIndex(),mymaze.getGoalPosition().getColumnIndex());
-//                setUpdatePlayerRow(mymaze.getStartPosition().getRowIndex());
-//                setUpdatePlayerCol(mymaze.getStartPosition().getColumnIndex());
-//
-//                mazeDisplayer.drawMaze(myviewmodel.getMaze());
-//
-//            }
-//            savebutton.setDisable(false);
-//        }
-//        //mazeDisplayer.requestFocus();
-//    }
 
     public void SaveMaze(ActionEvent actionEvent) {
         if (mymaze == null){
@@ -230,6 +199,15 @@ public class MyViewController implements Initializable, Observer {
     }
 
     public void HelpButton(ActionEvent actionEvent) {
+        String MessageToDisplay = "Welcome to the maze game!\n" +
+                "your goal is to move Harry Potter to the snitch.\n" +
+                "you can use the arrow buttons or all numbers in the numpad\n" +
+                "press 5 to see the solution\npress g to generate new maze\npress m to start / stop the music";
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About");
+        alert.setHeaderText(null);
+        alert.setContentText(MessageToDisplay);
+        alert.show();
     }
 
     public void AboutUsButton(ActionEvent actionEvent) {
@@ -406,49 +384,18 @@ public class MyViewController implements Initializable, Observer {
 
     }
 
-    public void Zoom(ScrollEvent scroll) {
+    public void scroll(ScrollEvent scroll) {
         if(scroll.isControlDown() || scroll.isShiftDown()){
             if(scroll.getDeltaY()>0 || scroll.getDeltaX()>0){
-                mazeDisplayer.setZoom(mazeDisplayer.getZoom()*1.1);
+                mazeDisplayer.setscroll(mazeDisplayer.getscroll()*1.1);
             }
             if(scroll.getDeltaY()<0 || scroll.getDeltaX()<0){
-                mazeDisplayer.setZoom(mazeDisplayer.getZoom()/1.1);
+                mazeDisplayer.setscroll(mazeDisplayer.getscroll()/1.1);
             }
             scroll.consume();
-           // try {
-                mazeDisplayer.draw();
-           // }
-            //catch (FileNotFoundException e){
-//                System.out.println(e.getStackTrace());
-//                showAlert(e.getMessage(), "Error");
-//            }
+            mazeDisplayer.draw();
+
         }
     }
 
-    public void setResizeEvent(Scene scene) {
-        scene.widthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-                //try {
-                    mazeDisplayer.draw();
-               // }
-               // catch (FileNotFoundException e){
-               //     System.out.println(e.getStackTrace());
-              //      NewAlert(e.getMessage(), "Error");
-              //  }
-            }
-        });
-        scene.heightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
-              //  try {
-                    mazeDisplayer.draw();
-              //  }
-              //  catch (FileNotFoundException e){
-              //     System.out.println(e.getStackTrace());
-                    //showAlert(e.getMessage(), "Error");
-              //  }
-            }
-        });
-    }
 }

@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane onScroll="#Zoom" onMouseClicked="#mouseClicked" xmlns:fx="http://javafx.com/fxml" fx:controller="View.MyViewController" stylesheets="@MainStyle.css">
+<BorderPane onScroll="#scroll" onMouseClicked="#mouseClicked" xmlns:fx="http://javafx.com/fxml" fx:controller="View.MyViewController" stylesheets="@MainStyle.css">
     <left>
         <VBox prefHeight="200.0" prefWidth="178.0" spacing="5.0" BorderPane.alignment="CENTER">
             <children>
@@ -76,11 +76,6 @@
                                 <MenuItem mnemonicParsing="false" text="Properties" onAction="#PropertiesInfo"/>
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Exit">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="Exit" onAction="#ExitGame"/>
-                            </items>
-                        </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <items>
                                 <MenuItem mnemonicParsing="false" text="Rules" onAction="#HelpButton"/>
@@ -89,6 +84,11 @@
                         <Menu mnemonicParsing="false" text="About">
                             <items>
                                 <MenuItem mnemonicParsing="false" text="About" onAction="#AboutUsButton"/>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Exit">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Exit" onAction="#ExitGame"/>
                             </items>
                         </Menu>
                     </menus>

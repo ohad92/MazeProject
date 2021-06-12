@@ -28,7 +28,7 @@ public class MazeDisplayer extends Canvas {
     private int playerCol = 0;
     private int TargetRow = 0;
     private int TargetCol = 0;
-    private double zoom = 1;
+    private double scroll = 1;
 
     private Solution solution;
     private Maze maze;
@@ -93,8 +93,8 @@ public class MazeDisplayer extends Canvas {
             int rows = maze.getRows();
             int cols = maze.getCols();
 
-            double cellHight = canvasHeight / rows * zoom;
-            double cellWidth = canvasWidth / cols * zoom;
+            double cellHight = canvasHeight / rows * scroll;
+            double cellWidth = canvasWidth / cols * scroll;
 
             GraphicsContext graphicsContext = getGraphicsContext2D();
             //clear the canvas
@@ -142,13 +142,7 @@ public class MazeDisplayer extends Canvas {
     }
 
     public void drawSolution(GraphicsContext graphicsContext,int rows, int cols, double cellHight, double cellWidth){
-        Image solImage = null;
-        try {
-            solImage = new Image(new FileInputStream((getImageFileNameTarget())));
-        } catch (FileNotFoundException e) {
-            System.out.println("There is no solve image");
-        }
-        graphicsContext.setFill(Color.BLUE);
+        graphicsContext.setFill(Color.YELLOW);
         //maze.printRealMaze();
         ArrayList<AState> b = this.solution.getSolutionPath();
 
@@ -156,10 +150,7 @@ public class MazeDisplayer extends Canvas {
             Position p = ((MazeState) b.get(i)).getCurrent();
             double x = p.getColumnIndex() * cellWidth;
             double y = p.getRowIndex() * cellHight;
-//            if (solImage == null)
-                graphicsContext.fillRect(x,y,cellWidth,cellHight);
-//            else
-//                graphicsContext.drawImage(solImage,x,y,cellWidth,cellHight);
+            graphicsContext.fillRect(x,y,cellWidth,cellHight);
         }
 
     }
@@ -223,12 +214,10 @@ public class MazeDisplayer extends Canvas {
         else
             graphicsContext.drawImage(TargetImage,x,y,cellWidth,cellHight);
     }
-    public void setZoom(double zoom) {
-        this.zoom = zoom;
-    }
+    public void setscroll(double scroll) { this.scroll = scroll; }
 
-    public double getZoom() {
-        return zoom;
+    public double getscroll() {
+        return scroll;
     }
 
 }

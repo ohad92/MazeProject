@@ -36,13 +36,10 @@ public class Main_NEW extends Application {
         primaryStage.setTitle("Maze Game");
         FXMLLoader fxmlloader = new FXMLLoader(getClass().getResource("/View/MyView.fxml"));
         Parent root = fxmlloader.load();
-        Scene scene = new Scene(root,580,430);
-        primaryStage.setScene(scene);
-        //primaryStage.setScene(new Scene(root, 600, 450));
+        primaryStage.setScene(new Scene(root, 580, 430));
 
 
         MyViewController myviewcontroller = fxmlloader.getController();
-        myviewcontroller.setResizeEvent(scene);
         myviewcontroller.setMyViewModel(myviewmodel);
 
 
