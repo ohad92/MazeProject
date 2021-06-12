@@ -14,8 +14,6 @@ import javafx.scene.input.KeyEvent;
 
 public class MyViewModel extends Observable implements Observer {
     private IModel model;
-    private Maze mymaze;
-
 
     public MyViewModel(IModel model) {
         this.model = model;

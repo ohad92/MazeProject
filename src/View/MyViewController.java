@@ -11,10 +11,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -32,11 +29,11 @@ import java.util.Observer;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-public class MyViewController implements Initializable, Observer {
+public class MyViewController implements IView,Initializable, Observer {
     public MenuItem newbutton;
     public MenuItem savebutton;
     public MenuItem loadbutton;
-    public MenuItem startmusic;
+    public Button solveMaze;
     public TextField textField_mazeRows;
     public TextField textField_mazeColumns;
     public MazeDisplayer mazeDisplayer;
@@ -80,9 +77,7 @@ public class MyViewController implements Initializable, Observer {
         lbl_playerRow.textProperty().bind(updatePlayerRow);
         lbl_playerCol.textProperty().bind(updatePlayerCol);
     }
-/*    private void solveMazeWasInvoked(){
-        mazeDisplayer.setSolutionObj(getSolutionFromViewModel());
-    }*/
+
 
     public void generateMaze(ActionEvent actionEvent) {
 
@@ -91,6 +86,7 @@ public class MyViewController implements Initializable, Observer {
 //        myviewmodel.generateMaze(rows,cols);
 //        mazeDisplayer.drawMaze(myviewmodel.getMaze());
 //
+        solveMaze.setDisable(false);
         String row = textField_mazeRows.getText();
         String column = textField_mazeColumns.getText();
         if (!row.matches("\\d*") || !column.matches("\\d*") || row.equals("") || column.equals("")){
@@ -112,8 +108,6 @@ public class MyViewController implements Initializable, Observer {
                 mazeDisplayer.drawMaze(myviewmodel.getMaze());
 
             }
-            savebutton.setDisable(false);
-            //solvemaze.setDisable(false);
         }
         //mazeDisplayer.requestFocus();
 
@@ -222,23 +216,9 @@ public class MyViewController implements Initializable, Observer {
     }
 
     public void keyPressed(KeyEvent keyEvent) {
-
-//        int row = mazeDisplayer.getPlayerRow();
-//        int col = mazeDisplayer.getPlayerCol();
-//
-//        //getcode is the key code of the botton pressed
-//        switch (keyEvent.getCode()) {
-//            case UP -> row -= 1;
-//            case DOWN -> row += 1;
-//            case LEFT -> col -= 1;
-//            case RIGHT -> col += 1;
-//        }
-//        mazeDisplayer.setPosition(row,col); // need to update the new row and col
-//        setUpdatePlayerRow(row);
-//        setUpdatePlayerCol(col);
-//        keyEvent.consume(); // tell the event we already handled it, no more keypressed
-        if (keyEvent.getCode() == KeyCode.NUMPAD5)
-            solveMaze(new ActionEvent());
+        if (!solveMaze.isDisable())
+            if (keyEvent.getCode() == KeyCode.NUMPAD5)
+                solveMaze(new ActionEvent());
         if (keyEvent.getCode() == KeyCode.M)
             startmusic(new ActionEvent());
         if (keyEvent.getCode() == KeyCode.G)
@@ -249,11 +229,15 @@ public class MyViewController implements Initializable, Observer {
         keyEvent.consume(); // tell the event we already handled it, no more keypressed
     }
 
-//    public void setPlayerPosition(int row, int col){
-//        mazeDisplayer.setPosition(row,col);
-//        setUpdatePlayerRow(row);
-//        setUpdatePlayerCol(col);
-//    }
+    public void MouseEvent(MouseEvent mouseevent){
+//        System.out.println("X: " + mouseevent.getX());
+//        System.out.println("Y: " + mouseevent.getY());
+//        System.out.println("getSceneX: " + mouseevent.getSceneX());
+//        System.out.println("getSceney: " + mouseevent.getSceneY());
+//        System.out.println("getScreenX: " + mouseevent.getScreenX());
+//        System.out.println("getScreenY: " + mouseevent.getScreenY());
+    }
+
 
     public void mouseClicked(MouseEvent mouseEvent) {
         mazeDisplayer.requestFocus();
@@ -285,7 +269,7 @@ public class MyViewController implements Initializable, Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        System.out.println("hi");
+        //System.out.println("hi");
 
         if (o instanceof MyViewModel) {
             if (winsongonoff == true)
@@ -315,6 +299,7 @@ public class MyViewController implements Initializable, Observer {
                         mazeDisplayer.draw();
                         WinSound(new ActionEvent());
                         mymaze = null;
+                        solveMaze.setDisable(true);
                     }
                     else {
                         mazeDisplayer.setPosition(playerrow, playercol, targetrow, targetcol);
@@ -377,7 +362,8 @@ public class MyViewController implements Initializable, Observer {
         }
         else
         {
-            mediaPlayer.stop();
+            if (mediaPlayer != null)
+                mediaPlayer.stop();
             mediaWin.play();
         }
         winsongonoff = true;

@@ -31,7 +31,6 @@ public class MyModel extends Observable implements IModel{
 
     public MyModel() {
         this.mymaze = null;
-        //propperties = Server.Configurations.loadConfig();
         }
 
     public void startServers(){
@@ -110,7 +109,6 @@ public class MyModel extends Observable implements IModel{
                     }
                 }
             });
-            /* invoking the anonymous "clientStrategy" implemented above */
             client.communicateWithServer();
         } catch (UnknownHostException e) {
             e.printStackTrace();

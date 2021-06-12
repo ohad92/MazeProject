@@ -36,7 +36,8 @@ public class Main_NEW extends Application {
         primaryStage.setTitle("Maze Game");
         FXMLLoader fxmlloader = new FXMLLoader(getClass().getResource("/View/MyView.fxml"));
         Parent root = fxmlloader.load();
-        primaryStage.setScene(new Scene(root, 580, 430));
+        Scene scene = new Scene(root,580,430);
+        primaryStage.setScene(scene);
 
 
         MyViewController myviewcontroller = fxmlloader.getController();
@@ -46,6 +47,7 @@ public class Main_NEW extends Application {
         myviewmodel.addObserver(myviewcontroller);
         CloseProgram(primaryStage, mymodel);
         primaryStage.show();
+
 
     }
     public static void main(String[] args) {

@@ -39,7 +39,7 @@
                     <TextField fx:id="textField_mazeRows" text="10" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                     <TextField fx:id="textField_mazeColumns" text="10" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <Button onAction="#generateMaze" prefHeight="25.0" prefWidth="167.0" text="Generate Maze (g)" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                    <Button fx:id="solvemaze" cancelButton="true" onAction="#solveMaze" prefHeight="25.0" prefWidth="167.0" text="Solve Maze (5)" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                    <Button fx:id="solveMaze" cancelButton="true" onAction="#solveMaze" prefHeight="25.0" prefWidth="167.0" text="Solve Maze (5)" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                     <Button onAction="#startmusic" prefHeight="25.0" prefWidth="167.0" text="Start / Stop Music (m)" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                     <Label alignment="CENTER" text="Player row:" textAlignment="CENTER" GridPane.rowIndex="5" />
                     <Label alignment="CENTER" text="Player col:" textAlignment="CENTER" GridPane.rowIndex="6" />
@@ -99,7 +99,7 @@
     <center>
         <Pane BorderPane.alignment="CENTER">
             <children>
-                <MazeDisplayer onKeyPressed="#keyPressed" fx:id="mazeDisplayer" imageFileNameWall="./resources/images/wall.png" imageFileNamePlayer="./resources/images/harry_potter_player.png" imageFileNameTarget="./resources/images/harry_potter_snitch.jpg" imageFileNameWin="./resources/images/harry_potter_win.jpg" height="400.0" width="400.0" />
+                <MazeDisplayer onKeyPressed="#keyPressed" onMouseClicked="#MouseEvent" fx:id="mazeDisplayer" imageFileNameWall="./resources/images/wall.png" imageFileNamePlayer="./resources/images/harry_potter_player.png" imageFileNameTarget="./resources/images/harry_potter_snitch.jpg" imageFileNameWin="./resources/images/harry_potter_win.jpg" height="400.0" width="400.0" />
             </children>
             <padding>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
