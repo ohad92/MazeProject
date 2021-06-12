@@ -22,14 +22,17 @@ public class MazeDisplayer extends Canvas {
     StringProperty imageFileNameWall = new SimpleStringProperty();
     StringProperty imageFileNamePlayer = new SimpleStringProperty();
     StringProperty imageFileNameTarget = new SimpleStringProperty();
+    StringProperty imageFileNameWin = new SimpleStringProperty();
 
     private int playerRow = 0;
     private int playerCol = 0;
     private int TargetRow = 0;
     private int TargetCol = 0;
+    private double zoom = 1;
 
     private Solution solution;
     private Maze maze;
+    private boolean solved = false;
 
     // getter and setters
     public int getPlayerRow() {
@@ -39,6 +42,7 @@ public class MazeDisplayer extends Canvas {
     public int getTargetRow() { return TargetRow; }
     public int getTargetCol() { return TargetCol; }
     public void setSolutionNull() {this.solution = null;}
+    public void setsolvedtrue() {this.solved = true;}
 
     public void setPosition(int playerrow, int playercol, int targetrow, int targetcol){
         this.playerRow = playerrow;
@@ -48,28 +52,30 @@ public class MazeDisplayer extends Canvas {
         draw(); // we call draw here because we want to draw the new position
     }
 
+    // getter and setter images
+
+    //wall
     public String getImageFileNameWall() {
         return imageFileNameWall.get();
     }
-
     public void setImageFileNameWall(String imageFileNameWall) {
         this.imageFileNameWall.set(imageFileNameWall);
     }
 
-    public String getImageFileNamePlayer() {
-        return imageFileNamePlayer.get();
-    }
+    //player
+    public String getImageFileNamePlayer() { return imageFileNamePlayer.get(); }
+    public void setImageFileNamePlayer(String imageFileNamePlayer) { this.imageFileNamePlayer.set(imageFileNamePlayer); }
 
-    public void setImageFileNamePlayer(String imageFileNamePlayer) {
-        this.imageFileNamePlayer.set(imageFileNamePlayer);
-    }
+    //target
     public String getImageFileNameTarget() {
         return imageFileNameTarget.get();
     }
+    public void setImageFileNameTarget(String imageFileNameTarget) { this.imageFileNameTarget.set(imageFileNameTarget); }
 
-    public void setImageFileNameTarget(String imageFileNameTarget) {
-        this.imageFileNameTarget.set(imageFileNameTarget);
-    }
+    //win
+    public String getImageFileNameWin() { return imageFileNameWin.get(); }
+    public void setImageFileNameWin(String imageFileNameWin) { this.imageFileNameWin.set(imageFileNameWin); }
+
 
     public void drawMaze(Maze maze) {
 //        Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -80,32 +86,59 @@ public class MazeDisplayer extends Canvas {
         setPosition(playerRow,playerCol,TargetRow,TargetCol); // set again the position of the player and the target when pressing generatemaze
     }
 
-    private void draw(){
+    public void draw(){
         if (maze != null){
             double canvasHeight = getHeight();
             double canvasWidth = getWidth();
             int rows = maze.getRows();
             int cols = maze.getCols();
 
-            double cellHight = canvasHeight / rows;
-            double cellWidth = canvasWidth / cols;
+            double cellHight = canvasHeight / rows * zoom;
+            double cellWidth = canvasWidth / cols * zoom;
 
             GraphicsContext graphicsContext = getGraphicsContext2D();
             //clear the canvas
             graphicsContext.clearRect(0,0,canvasWidth,canvasHeight);
 
-
             drawMazeWalls(graphicsContext,rows,cols,cellHight,cellWidth);
-            if (solution != null)
-                drawSolution(graphicsContext,rows,cols,cellHight,cellWidth);
-            drawPlayer(graphicsContext,cellHight,cellWidth);
-            drawTarget(graphicsContext,cellHight,cellWidth);
+            if (this.solved == false){
+                if (solution != null)
+                    drawSolution(graphicsContext,rows,cols,cellHight,cellWidth);
+                drawPlayer(graphicsContext,cellHight,cellWidth);
+                drawTarget(graphicsContext,cellHight,cellWidth);
+                graphicsContext.stroke();
+            }
+            //if the player reached the goal target
+            else {
+                graphicsContext.clearRect(0,0,canvasWidth,canvasHeight);
+                drawwin(graphicsContext,canvasWidth,canvasHeight);
+                this.solved = false;
+            }
 
         }
     }
+
+    private void drawwin(GraphicsContext graphicsContext, double cellHight, double cellWidth) {
+        Image winImage = null;
+        try {
+            winImage = new Image(new FileInputStream(getImageFileNameWin()));
+        } catch (FileNotFoundException e) {
+            System.out.println("There is no win image");
+        }
+        graphicsContext.setFill(Color.GREEN);
+        graphicsContext.drawImage(winImage,0,0,cellWidth,cellHight);
+    }
+
     public void drawMazeSolution(Solution solution) {
-        this.solution = solution;
-        draw();
+        if (this.solution == null){
+            this.solution = solution;
+            draw();
+        }
+        else{
+            this.solution = null;
+            draw();
+        }
+
     }
 
     public void drawSolution(GraphicsContext graphicsContext,int rows, int cols, double cellHight, double cellWidth){
@@ -189,6 +222,13 @@ public class MazeDisplayer extends Canvas {
             graphicsContext.fillRect(x,y,cellWidth,cellHight);
         else
             graphicsContext.drawImage(TargetImage,x,y,cellWidth,cellHight);
+    }
+    public void setZoom(double zoom) {
+        this.zoom = zoom;
+    }
+
+    public double getZoom() {
+        return zoom;
     }
 
 }

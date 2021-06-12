@@ -6,27 +6,30 @@ import algorithms.search.Solution;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import algorithms.mazeGenerators.Maze;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class MyViewController implements Initializable, Observer {
@@ -47,7 +50,10 @@ public class MyViewController implements Initializable, Observer {
     private int targetcol;
     //public static Stage window;
     private static MediaPlayer mediaPlayer;
+    private static MediaPlayer mediaWin;
+
     private boolean songisinoff;
+    private boolean winsongonoff;
 
     StringProperty updatePlayerRow = new SimpleStringProperty();
     StringProperty updatePlayerCol = new SimpleStringProperty();
@@ -199,11 +205,28 @@ public class MyViewController implements Initializable, Observer {
     }
 
     public void PropertiesInfo(ActionEvent actionEvent) {
+        try (InputStream inputstream = new FileInputStream("resources/Properties/config.properties"))
+        {
+            Properties properties = new Properties();
+            properties.load(inputstream);
+            String MessageToDisplay = "The searching algorithm is " + properties.getProperty("mazeSearchingAlgorithm") + "\n";
+            MessageToDisplay += "The generate algorithm is " + properties.getProperty("mazeGeneratingAlgorithm") + "\n";
+            MessageToDisplay += "The number of  threads is " + properties.getProperty("threadPoolSize") + "\n";
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Properties");
+            alert.setHeaderText(null);
+            alert.setContentText(MessageToDisplay);
+            alert.show();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void ExitGame(ActionEvent actionEvent) {
         this.myviewmodel.ExitGame();
-        Platform.exit();
+        //Platform.exit();
     }
 
     public void HelpButton(ActionEvent actionEvent) {
@@ -236,7 +259,14 @@ public class MyViewController implements Initializable, Observer {
 //        setUpdatePlayerRow(row);
 //        setUpdatePlayerCol(col);
 //        keyEvent.consume(); // tell the event we already handled it, no more keypressed
-
+        if (keyEvent.getCode() == KeyCode.NUMPAD5)
+            solveMaze(new ActionEvent());
+        if (keyEvent.getCode() == KeyCode.M)
+            startmusic(new ActionEvent());
+        if (keyEvent.getCode() == KeyCode.G)
+            generateMaze(new ActionEvent());
+        if (keyEvent.getCode() == KeyCode.ESCAPE)
+            ExitGame(new ActionEvent());
         myviewmodel.movePlayer(keyEvent);
         keyEvent.consume(); // tell the event we already handled it, no more keypressed
     }
@@ -280,8 +310,11 @@ public class MyViewController implements Initializable, Observer {
         System.out.println("hi");
 
         if (o instanceof MyViewModel) {
+            if (winsongonoff == true)
+                mediaWin.stop();
             if (mymaze == null)//generateMaze
             {
+
                 mymaze = myviewmodel.getMaze();
                 playerrow = myviewmodel.getPlayerRow();
                 playercol = myviewmodel.getPlayerCol();
@@ -298,12 +331,12 @@ public class MyViewController implements Initializable, Observer {
                     playercol = myviewmodel.getPlayerCol();
                     targetrow = myviewmodel.getTargetRow();
                     targetcol = myviewmodel.getTargetCol();
-                    if (playerrow==targetrow && playercol==targetcol) //show solution
+                    if (playerrow==targetrow && playercol==targetcol) //player reached the target
                     {
-//                        solution = viewModel.getSolution();
-//                        if (solution != null)
-//                        this.mazeDisplayer.solve(solution);
-                        NewAlert("you have solved the maze!","INFORMATION");
+                        mazeDisplayer.setsolvedtrue();
+                        mazeDisplayer.draw();
+                        WinSound(new ActionEvent());
+                        mymaze = null;
                     }
                     else {
                         mazeDisplayer.setPosition(playerrow, playercol, targetrow, targetcol);
@@ -312,9 +345,6 @@ public class MyViewController implements Initializable, Observer {
                         mazeDisplayer.drawMaze(maze);
                     }
 
-                        //if ((viewmodelcol == mymaze.getGoalPosition().getColumnIndex()) && (viewmodelrow == mymaze.getGoalPosition().getRowIndex()))
-                        //finish();
-                    //}
                 }
                 else
                 {
@@ -339,7 +369,8 @@ public class MyViewController implements Initializable, Observer {
     }
 
     public void startmusic(ActionEvent actionEvent) {
-
+        if (winsongonoff == true)
+            mediaWin.stop();
         if (mediaPlayer == null) {
             Media song = new Media(new File("resources/sound/harry_potter.mp3").toURI().toString());
             mediaPlayer = new MediaPlayer(song);
@@ -348,7 +379,7 @@ public class MyViewController implements Initializable, Observer {
         }
         else if (songisinoff == true)
         {
-            mediaPlayer.stop();
+            mediaPlayer.pause();
             songisinoff = false;
         }
         else
@@ -357,5 +388,67 @@ public class MyViewController implements Initializable, Observer {
             songisinoff = true;
         }
 
+    }
+
+    public void WinSound(ActionEvent actionEvent){
+        if (mediaWin == null) {
+            Media song = new Media(new File("resources/sound/win_sound.wav").toURI().toString());
+            mediaWin = new MediaPlayer(song);
+            mediaWin.play();
+
+        }
+        else
+        {
+            mediaPlayer.stop();
+            mediaWin.play();
+        }
+        winsongonoff = true;
+
+    }
+
+    public void Zoom(ScrollEvent scroll) {
+        if(scroll.isControlDown() || scroll.isShiftDown()){
+            if(scroll.getDeltaY()>0 || scroll.getDeltaX()>0){
+                mazeDisplayer.setZoom(mazeDisplayer.getZoom()*1.1);
+            }
+            if(scroll.getDeltaY()<0 || scroll.getDeltaX()<0){
+                mazeDisplayer.setZoom(mazeDisplayer.getZoom()/1.1);
+            }
+            scroll.consume();
+           // try {
+                mazeDisplayer.draw();
+           // }
+            //catch (FileNotFoundException e){
+//                System.out.println(e.getStackTrace());
+//                showAlert(e.getMessage(), "Error");
+//            }
+        }
+    }
+
+    public void setResizeEvent(Scene scene) {
+        scene.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+                //try {
+                    mazeDisplayer.draw();
+               // }
+               // catch (FileNotFoundException e){
+               //     System.out.println(e.getStackTrace());
+              //      NewAlert(e.getMessage(), "Error");
+              //  }
+            }
+        });
+        scene.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+              //  try {
+                    mazeDisplayer.draw();
+              //  }
+              //  catch (FileNotFoundException e){
+              //     System.out.println(e.getStackTrace());
+                    //showAlert(e.getMessage(), "Error");
+              //  }
+            }
+        });
     }
 }

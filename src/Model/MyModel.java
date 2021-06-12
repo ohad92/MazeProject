@@ -7,6 +7,7 @@ import Server.*;
 import algorithms.mazeGenerators.Maze;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
+import com.sun.media.jfxmediaimpl.platform.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
@@ -222,14 +223,13 @@ public class MyModel extends Observable implements IModel{
     }
 
     public void ExitGame() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Thank you for playing with our application!");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to close the game?");
         alert.setHeaderText(null);
         Optional<ButtonType> result = alert.showAndWait();
-        // if the user accept to exit
+        // if the user accept to exit the game
         if (result.get() == ButtonType.OK) {
             this.stopServers();
             System.exit(0);
-
         }
     }
 

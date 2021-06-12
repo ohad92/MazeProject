@@ -36,10 +36,13 @@ public class Main_NEW extends Application {
         primaryStage.setTitle("Maze Game");
         FXMLLoader fxmlloader = new FXMLLoader(getClass().getResource("/View/MyView.fxml"));
         Parent root = fxmlloader.load();
-        primaryStage.setScene(new Scene(root, 500, 500));
+        Scene scene = new Scene(root,580,430);
+        primaryStage.setScene(scene);
+        //primaryStage.setScene(new Scene(root, 600, 450));
 
 
         MyViewController myviewcontroller = fxmlloader.getController();
+        myviewcontroller.setResizeEvent(scene);
         myviewcontroller.setMyViewModel(myviewmodel);
 
 
@@ -55,7 +58,7 @@ public class Main_NEW extends Application {
     private void CloseProgram(Stage primaryStage, MyModel mymodel) {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent windowEvent) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are you sure you want to exit?");
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are you sure you want to close the game?");
                 alert.setHeaderText(null);
                 Optional<ButtonType> result = alert.showAndWait();
                 // if the user accept to exit
