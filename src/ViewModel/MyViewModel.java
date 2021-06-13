@@ -10,6 +10,7 @@ import algorithms.mazeGenerators.Maze;
 
 import Model.MovementDirection;
 import algorithms.search.Solution;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class MyViewModel extends Observable implements Observer {
@@ -50,7 +51,7 @@ public class MyViewModel extends Observable implements Observer {
         return model.getSolution();
     }
 
-    public void movePlayer(KeyEvent keyEvent){
+    public void movePlayerKeyboard(KeyEvent keyEvent){
         MovementDirection direction;
         switch (keyEvent.getCode()){
             case NUMPAD8:
@@ -86,6 +87,28 @@ public class MyViewModel extends Observable implements Observer {
                 return;
             }
         }
+        model.updatePlayerLocation(direction);
+    }
+    public void movePlayerMouse(KeyCode key)
+    {
+        MovementDirection direction;
+        switch (key){
+            case UP:
+                direction = MovementDirection.UP;
+                break;
+            case DOWN:
+                direction = MovementDirection.DOWN;
+                break;
+            case LEFT:
+                direction = MovementDirection.LEFT;
+                break;
+            case RIGHT:
+                direction = MovementDirection.RIGHT;
+                break;
+            default:
+                return;
+        }
+
         model.updatePlayerLocation(direction);
     }
 

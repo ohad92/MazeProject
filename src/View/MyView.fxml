@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
+
 <BorderPane onScroll="#scroll" onMouseClicked="#mouseClicked" xmlns:fx="http://javafx.com/fxml" fx:controller="View.MyViewController" stylesheets="@MainStyle.css">
     <left>
         <VBox prefHeight="200.0" prefWidth="178.0" spacing="5.0" BorderPane.alignment="CENTER">
@@ -33,6 +34,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <Label text="Maze rows:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                     <Label text="Maze columns:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
@@ -41,10 +43,11 @@
                     <Button onAction="#generateMaze" prefHeight="25.0" prefWidth="167.0" text="Generate Maze (g)" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                     <Button fx:id="solveMaze" cancelButton="true" onAction="#solveMaze" prefHeight="25.0" prefWidth="167.0" text="Solve Maze (5)" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                     <Button onAction="#startmusic" prefHeight="25.0" prefWidth="167.0" text="Start / Stop Music (m)" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                    <Label alignment="CENTER" text="Player row:" textAlignment="CENTER" GridPane.rowIndex="5" />
-                    <Label alignment="CENTER" text="Player col:" textAlignment="CENTER" GridPane.rowIndex="6" />
-                    <Label fx:id="lbl_playerRow" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                    <Label fx:id="lbl_playerCol" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                    <Button onAction="#moveplayerwithmouse" prefHeight="25.0" prefWidth="167.0" text="move with mouse ON/OFF" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                    <Label alignment="CENTER" text="Player row:" textAlignment="CENTER" GridPane.rowIndex="6" />
+                    <Label alignment="CENTER" text="Player col:" textAlignment="CENTER" GridPane.rowIndex="7" />
+                    <Label fx:id="lbl_playerRow" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                    <Label fx:id="lbl_playerCol" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                 </GridPane>
             </children>
             <padding>
@@ -99,7 +102,7 @@
     <center>
         <Pane fx:id="mazepane" BorderPane.alignment="CENTER">
             <children>
-                <MazeDisplayer onKeyPressed="#keyPressed" onMouseClicked="#MouseEvent" fx:id="mazeDisplayer" imageFileNameWall="./resources/images/wall.png" imageFileNamePlayer="./resources/images/harry_potter_player.png" imageFileNameTarget="./resources/images/harry_potter_snitch.jpg" imageFileNameWin="./resources/images/harry_potter_win.jpg" height="${mazepane.height}" width="${mazepane.width}" />
+                <MazeDisplayer onKeyPressed="#keyPressed" onMouseDragged="#MouseEvent" onMouseMoved="#MouseEvent" fx:id="mazeDisplayer" imageFileNameWall="./resources/images/wall.png" imageFileNamePlayer="./resources/images/harry_potter_player.png" imageFileNameTarget="./resources/images/harry_potter_snitch.jpg" imageFileNameWin="./resources/images/harry_potter_win.jpg" height="${mazepane.height}" width="${mazepane.width}" />
             </children>
             <padding>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

@@ -3,6 +3,7 @@ package View;
 import Model.MyModel;
 import ViewModel.MyViewModel;
 import algorithms.search.Solution;
+import com.sun.javafx.css.StyleCache;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -46,14 +47,13 @@ public class MyViewController implements IView,Initializable, Observer {
     private int playercol;
     private int targetrow;
     private int targetcol;
-    //public static Stage window;
     private static MediaPlayer mediaPlayer;
     private static MediaPlayer mediaWin;
-    //public Pane mazepane;
 
     private boolean songisinoff;
     private boolean winsongonoff;
     private boolean showvictoryimage;
+    private boolean moveplayerwithmouse=false;
 
     StringProperty updatePlayerRow = new SimpleStringProperty();
     StringProperty updatePlayerCol = new SimpleStringProperty();
@@ -108,7 +108,8 @@ public class MyViewController implements IView,Initializable, Observer {
 
             }
         }
-        //mazeDisplayer.requestFocus();
+        mazeDisplayer.requestFocus();
+        savebutton.setDisable(false);
 
     }
 
@@ -192,8 +193,8 @@ public class MyViewController implements IView,Initializable, Observer {
     public void HelpButton(ActionEvent actionEvent) {
         String MessageToDisplay = "Welcome to the maze game!\n" +
                 "your goal is to move Harry Potter to the snitch.\n" +
-                "you can use the arrow buttons or all numbers in the numpad\n" +
-                "press 5 to see the solution\npress g to generate new maze\npress m to start / stop the music";
+                "you can use the arrow buttons or all numbers in the numpad to move the player\n" +
+                "press 5 to see the solution\npress g to generate new maze\npress m to start / stop the music\npress the [move with mouse] to be able move the player on board with the mouse";
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("About");
         alert.setHeaderText(null);
@@ -222,92 +223,10 @@ public class MyViewController implements IView,Initializable, Observer {
             generateMaze(new ActionEvent());
         if (keyEvent.getCode() == KeyCode.ESCAPE)
             ExitGame(new ActionEvent());
-        myviewmodel.movePlayer(keyEvent);
+        myviewmodel.movePlayerKeyboard(keyEvent);
         keyEvent.consume(); // tell the event we already handled it, no more keypressed
     }
 
-    public void MouseEvent(MouseEvent mouseEvent) {
-//        System.out.println("X: " + mouseevent.getX());
-//        System.out.println("Y: " + mouseevent.getY());
-//        System.out.println("getSceneX: " + mouseevent.getSceneX());
-//        System.out.println("getSceney: " + mouseevent.getSceneY());
-//        System.out.println("getScreenX: " + mouseevent.getScreenX());
-//        System.out.println("getScreenY: " + mouseevent.getScreenY());
-
-//        if (myviewmodel.getMaze() != null) {
-//
-//            double quarterCellHeight = mazeDisplayer.get() / 4; // padding
-//            double quarterCellWidth = mazeDisplayCellWidth.get() / 4;
-//            boolean hasMoved = false;
-//
-//
-//            if (mouseEvent.getY() >= oldY + quarterCellHeight && mouseEvent.getY() < oldY + 3 * quarterCellHeight && mouseEvent.getX() > oldX + mazeDisplayCellWidth.get() + quarterCellWidth && mouseEvent.getX() < oldX + mazeDisplayCellWidth.get() * 2 - quarterCellWidth) {
-//                oldX += mazeDisplayCellWidth.get();
-//                hasMoved = viewModel.moveCharacter(KeyCode.RIGHT);
-//                if (!hasMoved) {
-//                    oldX -= mazeDisplayCellWidth.get();
-//                }
-//            } else if (mouseEvent.getY() >= oldY + quarterCellHeight && mouseEvent.getY() < oldY + 3 * quarterCellHeight && mouseEvent.getX() >= oldX - mazeDisplayCellWidth.get() + quarterCellWidth && mouseEvent.getX() < oldX - quarterCellWidth) {
-//                oldX -= mazeDisplayCellWidth.get();
-//                hasMoved = viewModel.moveCharacter(KeyCode.LEFT);
-//                if (!hasMoved) {
-//                    oldX += mazeDisplayCellWidth.get();
-//                }
-//            } else if (mouseEvent.getX() >= oldX + quarterCellWidth && mouseEvent.getX() < oldX + 3 * quarterCellWidth && mouseEvent.getY() > oldY + mazeDisplayCellHeight.get() + quarterCellHeight && mouseEvent.getY() < oldY + mazeDisplayCellHeight.get() * 2 - quarterCellHeight) {
-//                oldY += mazeDisplayCellHeight.get();
-//                hasMoved = viewModel.moveCharacter(KeyCode.DOWN);
-//                if (!hasMoved) {
-//                    oldY -= mazeDisplayCellHeight.get();
-//                }
-//            } else if (mouseEvent.getX() >= oldX + quarterCellWidth && mouseEvent.getX() < oldX + 3 * quarterCellWidth && mouseEvent.getY() > oldY - mazeDisplayCellHeight.get() + quarterCellHeight && mouseEvent.getY() < oldY - quarterCellHeight) {
-//                oldY -= mazeDisplayCellHeight.get();
-//                hasMoved = viewModel.moveCharacter(KeyCode.UP);
-//                if (!hasMoved) {
-//                    oldY += mazeDisplayCellHeight.get();
-//                }
-//            }
-//            //UP LEFT
-//            else if (mouseEvent.getY() > oldY - 3 * quarterCellHeight && mouseEvent.getY() < oldY - quarterCellHeight && mouseEvent.getX() >= oldX - 3 * quarterCellWidth && mouseEvent.getX() < oldX - quarterCellWidth) {
-//                oldX -= mazeDisplayCellWidth.get();
-//                oldY -= mazeDisplayCellHeight.get();
-//                hasMoved = viewModel.moveCharacter(KeyCode.NUMPAD7);
-//                if (!hasMoved) {
-//                    oldX += mazeDisplayCellWidth.get();
-//                    oldY += mazeDisplayCellHeight.get();
-//                }
-//            }
-//            //UP RIGHT
-//            else if (mouseEvent.getY() > oldY - 3 * quarterCellHeight && mouseEvent.getY() < oldY - quarterCellHeight && mouseEvent.getX() > oldX + mazeDisplayCellWidth.get() + quarterCellWidth && mouseEvent.getX() < oldX + mazeDisplayCellWidth.get() * 2 - quarterCellWidth) {
-//                oldX += mazeDisplayCellWidth.get();
-//                oldY -= mazeDisplayCellHeight.get();
-//                hasMoved = viewModel.moveCharacter(KeyCode.NUMPAD9);
-//                if (!hasMoved) {
-//                    oldX -= mazeDisplayCellWidth.get();
-//                    oldY += mazeDisplayCellHeight.get();
-//                }
-//            }
-//            //DOWN RIGHT
-//            else if (mouseEvent.getY() > oldY + mazeDisplayCellHeight.get() + quarterCellHeight && mouseEvent.getY() < oldY + mazeDisplayCellHeight.get() * 2 - quarterCellHeight && mouseEvent.getX() > oldX + mazeDisplayCellWidth.get() + quarterCellWidth && mouseEvent.getX() < oldX + mazeDisplayCellWidth.get() * 2 - quarterCellWidth) {
-//                oldX += mazeDisplayCellWidth.get();
-//                oldY += mazeDisplayCellHeight.get();
-//                hasMoved = viewModel.moveCharacter(KeyCode.NUMPAD3);
-//                if (!hasMoved) {
-//                    oldX -= mazeDisplayCellWidth.get();
-//                    oldY -= mazeDisplayCellHeight.get();
-//                }
-//            }
-//            //DOWN LEFT
-//            else if (mouseEvent.getY() > oldY + mazeDisplayCellHeight.get() + quarterCellHeight && mouseEvent.getY() < oldY + mazeDisplayCellHeight.get() * 2 - quarterCellHeight && mouseEvent.getX() >= oldX - mazeDisplayCellWidth.get() + quarterCellWidth && mouseEvent.getX() < oldX - quarterCellWidth) {
-//                oldX -= mazeDisplayCellWidth.get();
-//                oldY += mazeDisplayCellHeight.get();
-//                hasMoved = viewModel.moveCharacter(KeyCode.NUMPAD1);
-//                if (!hasMoved) {
-//                    oldX += mazeDisplayCellWidth.get();
-//                    oldY -= mazeDisplayCellHeight.get();
-//                }
-//            }
-//        }
-    }
 
     public void mouseClicked(MouseEvent mouseEvent) {
         mazeDisplayer.requestFocus();
@@ -372,6 +291,7 @@ public class MyViewController implements IView,Initializable, Observer {
                         mymaze = null;
                         solveMaze.setDisable(true);
                         showvictoryimage = true;
+                        savebutton.setDisable(true);
                     }
                     else {
                         mazeDisplayer.setPosition(playerrow, playercol, targetrow, targetcol);
@@ -456,6 +376,26 @@ public class MyViewController implements IView,Initializable, Observer {
         }
     }
 
+
+    public void MouseEvent(MouseEvent mouseEvent){
+        if (moveplayerwithmouse) {
+            if (mymaze != null) {
+                double x_position = mouseEvent.getX() / (mazeDisplayer.getWidth() / mymaze.getCols());
+                double y_position = mouseEvent.getY() / (mazeDisplayer.getHeight() / mymaze.getRows());
+
+                if (y_position < myviewmodel.getPlayerRow()) {
+                    myviewmodel.movePlayerMouse(KeyCode.UP);
+                } else if (y_position > myviewmodel.getPlayerRow() + 1) {
+                    myviewmodel.movePlayerMouse(KeyCode.DOWN);
+                } else if (x_position > myviewmodel.getPlayerCol() + 1) {
+                    myviewmodel.movePlayerMouse(KeyCode.RIGHT);
+                } else if (x_position < myviewmodel.getPlayerCol()) {
+                    myviewmodel.movePlayerMouse(KeyCode.LEFT);
+                }
+            }
+        }
+    }
+
     public void applyNewSize(Scene scene) {
         scene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -477,4 +417,10 @@ public class MyViewController implements IView,Initializable, Observer {
         });
     }
 
+    public void moveplayerwithmouse(ActionEvent actionEvent) {
+        if (moveplayerwithmouse)
+            moveplayerwithmouse = false;
+        else
+            moveplayerwithmouse = true;
+    }
 }

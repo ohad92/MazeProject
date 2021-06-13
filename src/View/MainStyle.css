@@ -1,5 +1,7 @@
 .root {
-    -fx-background-color: #5da2f0;
+    -fx-background-image: url("/images/harry_potter_background.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
 }
 
 Button {
@@ -20,3 +22,9 @@ Button:hover {
     -fx-content-display: LEFT;
 }
 
+Label {
+    -fx-text-fill: white;
+    -fx-font-family: "Arial Narrow";
+    -fx-font-weight: bold;
+    -fx-background-color: black;
+}
